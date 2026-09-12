@@ -258,6 +258,26 @@ def t_send_message(a):
     return {"ok": True, "message_id": msg.get("id"), "channel_id": cid}
 
 
+def t_edit_member_nickname(a):
+    gid = _snowflake("guild_id", a["guild_id"])
+    uid = a.get("user_id")
+    # Bots must change their own nickname via the @me endpoint.
+    me = (uid == "@me")
+    if not me:
+        uid = _snowflake("user_id", uid)
+    nick = a.get("nickname")
+    if nick is None:
+        payload = {"nick": None}
+    elif isinstance(nick, str) and not nick.strip():
+        payload = {"nick": None}
+    elif isinstance(nick, str) and len(nick) <= 32:
+        payload = {"nick": nick}
+    else:
+        raise DiscordError("nickname must be a string up to 32 characters (empty/null resets it).")
+    m = _api("PATCH", f"/guilds/{gid}/members/{uid}", payload)
+    return {"ok": True, "user_id": uid, "nick": m.get("nick")}
+
+
 DESTRUCTIVE = " DESTRUCTIVE — only call after explicit user confirmation."
 
 TOOLS = [
@@ -323,6 +343,11 @@ TOOLS = [
       "properties": {"channel_id": {"type": "string"}, "content": {"type": "string"},
                      "suppress_embeds": {"type": "boolean"}}},
      t_send_message),
+    ("edit_member_nickname", "Change a member/bot server nickname (PATCH guild member nick). Use user_id @me for the bot itself. Empty or null nickname resets it. Honors role hierarchy and permissions.",
+     {"type": "object", "required": ["guild_id", "user_id"],
+      "properties": {"guild_id": {"type": "string"}, "user_id": {"type": "string"},
+                     "nickname": {"type": "string"}}},
+     t_edit_member_nickname),
 ]
 HANDLERS = {name: fn for name, _, _, fn in TOOLS}
 
