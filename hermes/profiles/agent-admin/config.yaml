@@ -1,0 +1,87 @@
+model:
+  provider: custom
+  base_url: http://localhost:20128/v1
+  default: discord-cepat
+  fallback_models:
+    - o/mimo-v2.5-free
+    - o/muse-spark-1.3-contributor-free
+    - gemini/gemini-3.5-flash-lite
+    - kr/deepseek-3.2
+  api_key: ${HERMES_CUSTOM_LOCALHOST_20129_API_KEY}
+plugins:
+  enabled: []
+_config_version: 40
+platform_toolsets:
+  discord:
+    - browser
+    - clarify
+    - code_execution
+    - computer_use
+    - cronjob
+    - delegation
+    - discord
+    - discord_admin
+    - file
+    - image_gen
+    - kanban
+    - memory
+    - session_search
+    - skills
+    - terminal
+    - todo
+    - tts
+    - vision
+    - web
+known_plugin_toolsets:
+  discord:
+    - a2a
+    - spotify
+known_builtin_toolsets:
+  discord:
+    - browser
+    - clarify
+    - code_execution
+    - computer_use
+    - context_engine
+    - cronjob
+    - delegation
+    - discord
+    - discord_admin
+    - file
+    - homeassistant
+    - image_gen
+    - memory
+    - session_search
+    - skills
+    - spotify
+    - stt
+    - terminal
+    - todo
+    - tts
+    - video
+    - video_gen
+    - vision
+    - web
+    - x_search
+    - yuanbao
+platforms:
+  discord:
+    home_channel:
+      platform: discord
+      chat_id: '1547948932947124365'
+      name: 'KIAN | SOFTWARE ENGINEERING / #admin-console'
+      user_id: '284241671661813761'
+      scope_id: '1547874564711649343'
+    enabled: true
+    gateway_restart_notification: false
+mcp_servers:
+  discord-admin-plus:
+    command: /home/k14n/.hermes/hermes-agent/venv/bin/python
+    args:
+      - /home/k14n/.hermes/profiles/agent-admin/tools/discord-admin-plus/server.py
+    env:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+    enabled: true
+onboarding:
+  seen:
+    busy_input_prompt: true

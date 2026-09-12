@@ -1,0 +1,22 @@
+model:
+  provider: custom
+  base_url: http://localhost:20128/v1
+  default: gemini/gemini-3.5-flash-lite
+  fallback_models:
+  - fb/mimo/mimo-v2.5
+  - kr/claude-haiku-4.5
+  api_key: ${HERMES_CUSTOM_LOCALHOST_20129_API_KEY}
+plugins:
+  enabled: []
+_config_version: 40
+agent: {}
+platforms:
+  discord:
+    home_channel:
+      platform: discord
+      chat_id: '1547918107895668756'
+      name: 'KIAN | SOFTWARE ENGINEERING / #chat'
+      user_id: '284241671661813761'
+      scope_id: '1547874564711649343'
+    enabled: true
+    gateway_restart_notification: false

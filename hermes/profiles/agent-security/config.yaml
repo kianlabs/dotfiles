@@ -1,0 +1,22 @@
+model:
+  provider: custom
+  base_url: http://localhost:20128/v1
+  default: cl/deepseek/deepseek-v4-flash
+  fallback_models:
+  - fb/deepseek/deepseek-v4-flash
+  - kr/claude-sonnet-4.5-thinking
+  api_key: ${HERMES_CUSTOM_LOCALHOST_20129_API_KEY}
+plugins:
+  enabled: []
+_config_version: 40
+agent: {}
+platforms:
+  discord:
+    home_channel:
+      platform: discord
+      chat_id: '1548014014305665119'
+      name: 'KIAN | SOFTWARE ENGINEERING / #security-console'
+      user_id: '284241671661813761'
+      scope_id: '1547874564711649343'
+    enabled: true
+    gateway_restart_notification: false
