@@ -1,0 +1,53 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "/home/k14n/hermes-visualizer/index.ts"
+  ],
+  "model": "9router/kr/auto",
+  "provider": {
+    "9router": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "9router",
+      "options": {
+        "baseURL": "http://localhost:20128/v1",
+        "apiKey": "sk-7e8c8d52c7afd3eb-xh9kin-940aea33"
+      },
+      "models": {
+        "kr/claude-sonnet-4.5": {
+          "name": "Claude Sonnet 4.5 (KR)",
+          "limit": {
+            "context": 200000,
+            "output": 8192
+          }
+        },
+        "kr/claude-haiku-4.5": {
+          "name": "Claude Haiku 4.5 (KR)",
+          "limit": {
+            "context": 200000,
+            "output": 8192
+          }
+        },
+        "kr/auto": {
+          "name": "KR Auto",
+          "limit": {
+            "context": 200000,
+            "output": 8192
+          }
+        }
+      }
+    }
+  },
+  "mcp": {
+    "pencil": {
+      "command": [
+        "/tmp/.mount_Pen-liQrMbUt/resources/app.asar.unpacked/out/mcp-server-linux-x64",
+        "--app",
+        "desktop",
+        "--agent",
+        "openCodeCLI"
+      ],
+      "enabled": true,
+      "type": "local"
+    }
+  }
+}

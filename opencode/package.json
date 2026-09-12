@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@opencode-ai/plugin": "1.18.23",
+    "github-mcp-scoped-server": "^1.5.0",
+    "@upstash/context7-mcp": "*",
+    "@playwright/mcp": "*",
+    "grep-mcp": "*"
+  }
+}

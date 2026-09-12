@@ -1,4 +1,4 @@
-@import url('../../.cache/wal/colors-waybar.css');
+@import url('/home/k14n/.cache/wal/colors-waybar.css');
 
 @define-color background transparent;
 
@@ -46,12 +46,8 @@ window#waybar {
 }
 
 #custom-logo {
-    min-width: 26px;
-    padding: 4px 8px 4px 6px;
+    padding: 4px 8px;
     font-size: 13px;
-    font-family: "JetBrainsMono Nerd Font";
-    font-style: normal;
-    font-weight: normal;
 }
 
 #hardware {
@@ -116,12 +112,8 @@ window#waybar {
 }
 
 #custom-coffee {
-    min-width: 26px;
-    padding: 4px 10px 4px 4px;
+    padding: 4px 9px;
     font-size: 13px;
-    font-family: "Font Awesome 7 Free";
-    font-style: normal;
-    font-weight: 900;
     transition: all 0.2s ease;
 }
 
@@ -136,12 +128,8 @@ window#waybar {
 }
 
 #custom-power {
-    min-width: 26px;
-    padding: 4px 8px 4px 6px;
+    padding: 4px 8px;
     font-size: 12px;
-    font-family: "Font Awesome 7 Free";
-    font-style: normal;
-    font-weight: 900;
 }
 
 tooltip {
@@ -154,4 +142,57 @@ tooltip {
 tooltip label {
     color: @color7;
     padding: 5px;
+}
+
+
+/* Fix icon font */
+#custom-logo {
+    font-family: "JetBrainsMono Nerd Font";
+    font-style: normal;
+    font-weight: normal;
+}
+
+#custom-coffee,
+#custom-power {
+    font-family: "Font Awesome 7 Free";
+    font-style: normal;
+    font-weight: 900;
+}
+
+/* Visual centering icon buttons */
+#custom-logo {
+    min-width: 26px;
+    padding: 4px 7px;
+}
+
+#custom-coffee {
+    min-width: 26px;
+    padding: 4px 7px;
+}
+
+#custom-power {
+    min-width: 26px;
+    padding: 4px 7px;
+}
+
+/* Fine tune horizontal centering */
+#custom-logo {
+    padding-left: 6px;
+    padding-right: 8px;
+}
+
+#custom-coffee {
+    padding-left: 6px;
+    padding-right: 8px;
+}
+
+#custom-power {
+    padding-left: 6px;
+    padding-right: 8px;
+}
+
+/* Coffee final alignment */
+#custom-coffee {
+    padding-left: 4px;
+    padding-right: 10px;
 }

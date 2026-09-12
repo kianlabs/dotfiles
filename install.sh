@@ -14,6 +14,13 @@ COMPONENTS=(
     rofi
     mako
     cava
+    matugen
+)
+
+# Safe to auto-enable on fresh install (local UI helpers only).
+# Gateway/9router/tailscale/llama units are restored but NEVER auto-enabled here.
+SAFE_ENABLE_UNITS=(
+    mako.service
 )
 
 PACMAN_PACKAGES=(
@@ -41,6 +48,15 @@ PACMAN_PACKAGES=(
     polkit
     hyprpolkitagent
     ttf-jetbrains-mono-nerd
+    git
+    zsh
+    starship
+    nodejs
+    npm
+    python
+    python-pip
+    uv
+    tailscale
 )
 
 AUR_PACKAGES=(
@@ -49,6 +65,8 @@ AUR_PACKAGES=(
     python-pywal16
     awww
     hyprshot
+    visual-studio-code-bin
+    rustdesk-bin
 )
 
 print_header() {
@@ -271,8 +289,148 @@ check_commands() {
     done
 }
 
-restore_backup() {
+backup_home_file() {
+    local rel="$1"
+    local target="$HOME/$rel"
+
+    if [[ -e "$target" ]]; then
+        mkdir -p "$BACKUP_DIR/home" || return 1
+        echo "Backup: $target"
+        cp -a "$target" "$BACKUP_DIR/home/$(echo "$rel" | tr '/' '_')" || return 1
+    fi
+
+    return 0
+}
+
+install_home_file() {
+    local rel="$1"
+    local source="$REPO_DIR/$2"
+    local target="$HOME/$rel"
+
+    if [[ ! -e "$source" ]]; then
+        echo "Skipping $rel: not found in repository."
+        return 0
+    fi
+
+    backup_home_file "$rel" || { echo "Aborted to protect $target."; return 1; }
+    rm -rf "$target"
+    cp -a "$source" "$target" && echo "Installed $rel"
+}
+
+install_home_files() {
     echo
+    echo "==> Installing home files (zsh/git/vscode/opencode)..."
+    echo
+
+    install_home_file ".zshrc" "zsh/zshrc"
+    install_home_file ".p10k.zsh" "zsh/p10k.zsh"
+    install_home_file ".gitconfig" "git/gitconfig"
+    install_home_file "opencode.json" "opencode/opencode-home.json"
+
+    if [[ -d "$REPO_DIR/zsh/zshrc.d" ]]; then
+        mkdir -p "$HOME/.config"
+        backup_home_file ".config/zshrc.d" || return 1
+        rm -rf "$HOME/.config/zshrc.d"
+        cp -a "$REPO_DIR/zsh/zshrc.d" "$HOME/.config/zshrc.d" && echo "Installed .config/zshrc.d"
+    fi
+
+    mkdir -p "$HOME/.config/Code/User"
+    backup_home_file ".config/Code/User/settings.json" || return 1
+    if [[ -f "$REPO_DIR/vscode/settings.json" ]]; then
+        cp -a "$REPO_DIR/vscode/settings.json" "$HOME/.config/Code/User/settings.json" \
+            && echo "Installed VS Code settings.json"
+    fi
+
+    if [[ -d "$REPO_DIR/opencode/skills" ]]; then
+        mkdir -p "$HOME/.config/opencode"
+        cp -a "$REPO_DIR/opencode/skills" "$HOME/.config/opencode/skills" 2>/dev/null \
+            && echo "Installed opencode skills"
+        cp -a "$REPO_DIR/opencode/plugins" "$HOME/.config/opencode/plugins" 2>/dev/null \
+            && echo "Installed opencode plugins"
+    fi
+
+    for f in opencode.json opencode.jsonc tui.jsonc; do
+        if [[ -f "$REPO_DIR/opencode/$f" ]]; then
+            backup_home_file ".config/opencode/$f" || return 1
+            mkdir -p "$HOME/.config/opencode"
+            cp -a "$REPO_DIR/opencode/$f" "$HOME/.config/opencode/$f" \
+                && echo "Installed .config/opencode/$f"
+        fi
+    done
+}
+
+install_repo_scripts() {
+    echo
+    echo "==> Installing helper scripts to ~/.local/bin ..."
+    echo
+
+    mkdir -p "$HOME/.local/bin"
+
+    for s in "$REPO_DIR"/scripts/*.sh; do
+        [[ -e "$s" ]] || continue
+        cp -a "$s" "$HOME/.local/bin/" && chmod +x "$HOME/.local/bin/$(basename "$s")"
+        echo "Installed $(basename "$s")"
+    done
+}
+
+restore_packages() {
+    echo
+    echo "==> Restoring packages from inventory..."
+    echo
+
+    if ! is_arch; then
+        echo "Not Arch Linux, skipping."
+        return
+    fi
+
+    if [[ -f "$REPO_DIR/packages/pacman-official.txt" ]]; then
+        sudo pacman -S --needed - < "$REPO_DIR/packages/pacman-official.txt" || \
+            echo "Some official packages failed, continuing."
+    fi
+
+    if [[ -f "$REPO_DIR/packages/aur.txt" ]]; then
+        if command -v yay >/dev/null 2>&1; then
+            yay -S --needed - < "$REPO_DIR/packages/aur.txt" || \
+                echo "Some AUR packages failed, continuing."
+        else
+            echo "yay not found, skipping AUR list."
+        fi
+    fi
+
+    if [[ -f "$REPO_DIR/vscode/extensions.txt" ]] && command -v code >/dev/null 2>&1; then
+        while IFS= read -r ext; do
+            [[ -n "$ext" ]] && code --install-extension "$ext" --force >/dev/null 2>&1 || true
+        done < "$REPO_DIR/vscode/extensions.txt"
+        echo "VS Code extensions restored."
+    fi
+}
+
+restore_systemd_units() {
+    echo
+    echo "==> Restoring systemd user units (NO auto-enable except safe list)..."
+    echo
+
+    mkdir -p "$HOME/.config/systemd/user"
+
+    for u in "$REPO_DIR"/systemd/*.service "$REPO_DIR"/systemd/*.timer \
+             "$REPO_DIR"/hermes/systemd/*.service; do
+        [[ -e "$u" ]] || continue
+        cp -a "$u" "$HOME/.config/systemd/user/" && echo "Restored $(basename "$u")"
+    done
+
+    systemctl --user daemon-reload 2>/dev/null || true
+
+    for u in "${SAFE_ENABLE_UNITS[@]}"; do
+        systemctl --user enable "$u" 2>/dev/null && echo "Enabled $u" || true
+    done
+
+    echo
+    echo "Enable the rest MANUALLY after secrets are in place, e.g.:"
+    echo "  systemctl --user enable --now 9router-mibp.service"
+    echo "  systemctl --user enable --now hermes-gateway-agent-discord.service"
+}
+
+restore_backup() {    echo
     echo "Available backups:"
     echo
 
@@ -341,6 +499,9 @@ full_install() {
     install_pacman_packages
     install_aur_packages
     install_all_configs
+    install_home_files
+    install_repo_scripts
+    restore_systemd_units
     enable_services
     generate_colors
     check_commands
@@ -392,6 +553,9 @@ while true; do
     echo "3) Install dependencies only"
     echo "4) Check dependencies"
     echo "5) Restore backup"
+    echo "6) Restore packages from inventory"
+    echo "7) Restore systemd units (no risky enable)"
+    echo "8) Install home files (zsh/git/vscode/opencode)"
     echo "0) Exit"
     echo
 
@@ -417,6 +581,19 @@ while true; do
             ;;
         5)
             restore_backup
+            pause
+            ;;
+        6)
+            restore_packages
+            pause
+            ;;
+        7)
+            restore_systemd_units
+            pause
+            ;;
+        8)
+            install_home_files
+            install_repo_scripts
             pause
             ;;
         0)

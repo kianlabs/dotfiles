@@ -21,10 +21,28 @@ cache/
 *history*
 .env
 .env.*
+!.env.example
 *.key
 *.pem
+*.p12
+*.pfx
 credentials*
 secrets*
+sessions/
+logs/
+memory/
+memories/
+*.db
+*.sqlite
+*.sqlite3
+*.sqlite-shm
+*.sqlite-wal
+*.gguf
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
 
 # Neovim runtime/cache
 nvim/.luarc.json

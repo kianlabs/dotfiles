@@ -1,0 +1,11 @@
+[Unit]
+Description=Probe kiro tiap 10 menit
+
+[Timer]
+OnBootSec=5m
+OnUnitActiveSec=10m
+AccuracySec=30s
+Unit=kiro-monitor.service
+
+[Install]
+WantedBy=timers.target

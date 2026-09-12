@@ -1,0 +1,11 @@
+[Unit]
+Description=Cek PID gateway tiap 1 menit
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=1m
+AccuracySec=10s
+Unit=gateway-deathwatch.service
+
+[Install]
+WantedBy=timers.target

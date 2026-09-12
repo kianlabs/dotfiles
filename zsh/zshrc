@@ -1,0 +1,110 @@
+# Enable Powerlevel10k instant prompt (must be near the top)
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# History
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt SHARE_HISTORY
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
+
+# Powerlevel10k
+source ~/.powerlevel10k/powerlevel10k.zsh-theme
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Plugins
+source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+
+# fzf
+source <(fzf --zsh)
+eval "$(zoxide init zsh)"
+
+# Palet matugen (ikut wallpaper) — fallback Catppuccin Mocha
+if [[ -f ~/.cache/cli-colors.sh ]]; then
+  source ~/.cache/cli-colors.sh
+else
+  export MG_BG=1e1e2e MG_SURFACE=181825 MG_FG=cdd6f4 MG_SUBTEXT=bac2de \
+         MG_OUTLINE=585b70 MG_PRIMARY=cba6f7 MG_SECONDARY=caa6e3 \
+         MG_TERTIARY=f5c2e7 MG_ERROR=f38ba8
+fi
+
+# fzf (fzf-tab / Ctrl-R) mengikuti palet matugen
+export FZF_DEFAULT_OPTS="
+  --color=bg:#$MG_BG,bg+:#$MG_SURFACE,fg:#$MG_FG,fg+:#$MG_FG
+  --color=hl:#$MG_PRIMARY,hl+:#$MG_PRIMARY,gutter:#$MG_BG
+  --color=border:#$MG_OUTLINE,separator:#$MG_OUTLINE
+  --color=info:#$MG_SECONDARY,prompt:#$MG_PRIMARY,pointer:#$MG_TERTIARY
+  --color=marker:#$MG_TERTIARY,spinner:#$MG_PRIMARY,header:#$MG_FG"
+
+# bat tema Catppuccin Mocha (sama dengan fallback nvim di mkhmtdots)
+export BAT_THEME="Catppuccin Mocha"
+export LESS="--RAW-CONTROL-CHARS"
+
+# Aliases
+alias ls="eza --icons --group-directories-first"
+alias ll="eza -l --icons --group-directories-first"
+alias la="eza -la --icons --group-directories-first"
+alias lt="eza -lT --icons --group-directories-first --level=2"
+alias cat="bat --paging=never"
+alias find="fd"
+alias grep="rg"
+alias ..="cd .."
+alias ...="cd ../.."
+alias vim="nvim"
+alias df="df -h"
+alias free="free -h"
+alias c="clear"
+alias lg="lazygit"
+alias upd="sudo pacman -Syu"
+alias yup="yay -Syu"
+alias mirrors="sudo reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist"
+
+# Docker
+alias dps="docker ps"
+alias dpa="docker ps -a"
+alias di="docker images"
+alias dclean="docker system prune -af"
+
+# Editor
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# Local bin (rice dashboard, etc.)
+export PATH="$HOME/.local/bin:$PATH"
+alias rice="$HOME/.local/bin/rice"
+
+# Completion styling (fzf-tab)
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -l --icons --color=always $realpath'
+zstyle ':fzf-tab:complete:*:*' fzf-preview 'bat --color=always --style=numbers $realpath 2>/dev/null || ls --color=always $realpath'
+export PATH=~/.npm-global/bin:$PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Bebek gif
+bebek() {
+  local img="$HOME/Pictures/duck-transparent-kecil.gif"
+  [[ "$1" == "besar" ]] && img="$HOME/Pictures/duck-transparent.gif"
+  kitty +kitten icat "$img"
+}
+bebek-kecil() {
+  bebek
+}
+
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:/home/k14n/.lmstudio/bin"
+
+# OMP + 9router
+alias omp='OPENAI_API_KEY=$HERMES_CUSTOM_LOCALHOST_20128_API_KEY OPENAI_BASE_URL=http://localhost:20128/v1 omp'
+export HERMES_CUSTOM_LOCALHOST_20129_API_KEY="sk-7e8c8d52c7afd3eb-xh9kin-940aea33"
+
+# bun completions
+[ -s "/home/k14n/.bun/_bun" ] && source "/home/k14n/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

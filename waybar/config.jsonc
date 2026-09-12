@@ -17,10 +17,10 @@
     ],
 
     "modules-right": [
-        "group/status",
-        "group/system",
-        "custom/coffee",
-        "custom/power"
+    "group/status",
+    "group/system",
+    "custom/coffee",
+    "custom/power"
     ],
 
     "custom/logo": {
@@ -69,7 +69,7 @@
     },
 
     "custom/cava": {
-        "exec": "bash $HOME/.config/waybar/scripts/cava.sh",
+        "exec": "/home/k14n/.config/waybar/scripts/cava.sh",
         "restart-interval": 1,
         "tooltip": false
     },
@@ -141,11 +141,11 @@
     },
 
     "custom/coffee": {
-        "exec": "$HOME/.config/waybar/scripts/coffee-mode.sh",
-        "return-type": "json",
-        "interval": 2,
-        "on-click": "$HOME/.config/waybar/scripts/coffee-mode.sh toggle",
-        "tooltip": true
+    "exec": "/home/k14n/.config/waybar/scripts/coffee-mode.sh",
+    "return-type": "json",
+    "interval": 2,
+    "on-click": "/home/k14n/.config/waybar/scripts/coffee-mode.sh toggle",
+    "tooltip": true
     },
 
     "custom/power": {

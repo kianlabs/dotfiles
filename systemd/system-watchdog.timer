@@ -1,0 +1,11 @@
+[Unit]
+Description=Arch Linux System Anomaly Watchdog Timer
+After=network.target
+
+[Timer]
+OnBootSec=2m
+OnUnitActiveSec=10m
+Unit=system-watchdog.service
+
+[Install]
+WantedBy=timers.target

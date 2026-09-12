@@ -38,12 +38,23 @@ A clean and minimal desktop setup featuring **Hyprland, Waybar, Kitty, Neovim, R
 ```text
 dotfiles/
 ├── cava/
+├── docs/            # restore, arch-setup, nvidia, hermes, local-ai, remote-access
+├── git/
+├── hermes/          # sanitized multi-profile Hermes backup
 ├── hypr/
 ├── kitty/
+├── local-ai/        # model inventory (names only)
 ├── mako/
+├── matugen/
 ├── nvim/
+├── opencode/
+├── packages/        # pacman-all/official, aur, npm-global
 ├── rofi/
+├── scripts/         # helper scripts (llama, monitors, watchdogs)
+├── systemd/         # user units (non-Hermes)
+├── vscode/
 ├── waybar/
+├── zsh/
 └── install.sh
 ```
 
@@ -86,8 +97,26 @@ The installer provides an interactive menu:
 3) Install dependencies only
 4) Check dependencies
 5) Restore backup
+6) Restore packages from inventory
+7) Restore systemd units (no risky enable)
+8) Install home files (zsh/git/vscode/opencode)
 0) Exit
 ```
+
+Fresh Arch restore flow: `docs/restore.md`.
+Package lists: `packages/` (158 pacman: 136 official + 22 AUR, 42 VS Code extensions).
+Systemd: units restored + daemon-reload; only safe units auto-enabled
+(`mako.service`) — gateway/9router/tailscale/llama enable manual (lihat `docs/`).
+Hermes: `hermes/README.md` + `docs/hermes.md` (secret isi manual).
+Local AI: `docs/local-ai.md` + `local-ai/models.md`. Remote: `docs/remote-access.md`.
+
+## 🔐 Secrets & NOT backed up
+
+Secrets (`DISCORD_BOT_TOKEN`, API keys, `.env` values, Wi-Fi/SSH/RustDesk credentials,
+`~/.9router/db/data.sqlite`) TIDAK ada di repo ini. Restore DB 9router: file terenkripsi
+offline → `~/.9router/db/data.sqlite`, `chmod 600`, sebelum start service.
+Tidak dibackup juga: wallpaper binary (`~/.config/wallpapers`, path didokumentasikan),
+model `.gguf`, cache, font binary, `sessions/logs/memory`, database, `SOUL.md`.
 
 ### Full Installation
 

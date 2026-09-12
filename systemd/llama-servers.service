@@ -1,0 +1,13 @@
+[Unit]
+Description=llama.cpp servers (7B chat + 1.5B autocomplete)
+After=graphical-session.target
+
+[Service]
+Type=forking
+ExecStart=%h/.local/bin/start-llama-servers.sh
+ExecStop=pkill -f "llama-server.*123[45]"
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

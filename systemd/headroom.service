@@ -1,0 +1,14 @@
+[Unit]
+Description=Headroom AI proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/k14n/.headroom-venv/bin/headroom proxy --port 8787 --anthropic-api-url http://localhost:20128/v1 --openai-api-url http://localhost:20128/v1
+WorkingDirectory=/home/k14n
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

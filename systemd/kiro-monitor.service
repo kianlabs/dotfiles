@@ -1,0 +1,6 @@
+[Unit]
+Description=Probe kesehatan kiro via 9router (log tiap 10 menit)
+
+[Service]
+Type=oneshot
+ExecStart=/home/k14n/.local/bin/kiro-monitor.sh

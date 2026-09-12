@@ -1,0 +1,15 @@
+[Unit]
+Description=9Router MIBP Version (manual prod)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/k14n/9router-mibp-version
+EnvironmentFile=/home/k14n/9router-mibp-version/.env
+ExecStart=/usr/bin/node custom-server.js --port 20128 --hostname 127.0.0.1
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

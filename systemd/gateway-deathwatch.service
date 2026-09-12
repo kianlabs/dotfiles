@@ -1,0 +1,6 @@
+[Unit]
+Description=Catat perubahan PID gateway (deteksi SIGKILL)
+
+[Service]
+Type=oneshot
+ExecStart=/home/k14n/.local/bin/gateway-deathwatch.sh

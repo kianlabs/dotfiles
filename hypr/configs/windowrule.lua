@@ -22,7 +22,9 @@ hl.window_rule({
 hl.window_rule({ name = "opacity-spotify",  match = { title = ".*Spotify.*" },       opacity = opFocus })
 hl.window_rule({ name = "opacity-discord",  match = { title = ".*Discord.*" },       opacity = opFocus })
 hl.window_rule({ name = "opacity-telegram", match = { title = ".*Telegram.*" },      opacity = opFocus })
-hl.window_rule({ name = "opacity-code",     match = { title = ".*Code.*" },          opacity = opFocus })
+-- VSCode / code-oss transparan + blur (0.85). NOTE: kalau flicker balik, balikin ke "1 1"
+hl.window_rule({ name = "opacity-code-oss", match = { class = "^([Cc]ode(-oss)?|VSCodium)$" }, opacity = "0.85 0.85" })
+hl.window_rule({ name = "opacity-code",     match = { title = ".*Code.*" },          opacity = "0.85 0.85" })
 hl.window_rule({ name = "opacity-files",    match = { title = ".*(Thunar|nemo).*" }, opacity = opFocus })
 
 hl.window_rule({ name = "lunar-fullscreen", match = { class = "^Lunar Client.*$" }, fullscreen = true })
